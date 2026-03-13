@@ -1,0 +1,51 @@
+# Gradle files
+.gradle/
+build/
+*/build/
+
+# Local configuration
+local.properties
+
+# IntelliJ/Android Studio files
+.idea/
+*.iml
+atlassian-ide-plugin.xml
+.idea/modules.xml
+.idea/workspace.xml
+.idea/libraries/
+.idea/vcs.xml
+
+# Build outputs
+bin/
+gen/
+out/
+*.apk
+*.aar
+*.jar
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Capture files
+captures/
+
+# Keystore files
+*.jks
+*.keystore
+
+# Log files
+*.log
+
+# Google Services files
+google-services.json
+
+# External native build
+.externalNativeBuild
+.cxx/
+
+# Performance and analysis
+*.hprof
+
+# Navigation editor temp files
+.navigation/
