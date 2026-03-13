@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Build the application
+    cmds:
+      - ./gradlew assembleDebug
+
+  commit:
+    desc: Stage all changes and commit
+    cmds:
+      - git add .
+      - git commit -m "{{.CLI_ARGS | default "Update code"}}"
+    ignore_error: true
+
+  push:
+    desc: Push changes to GitHub
+    cmds:
+      - git push origin master
+
+  all:
+    desc: Build, commit, and push
+    deps: [build]
+    cmds:
+      - task: commit
+      - task: push

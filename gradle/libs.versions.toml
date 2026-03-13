@@ -35,6 +35,7 @@ moshiKotlin = "1.15.2"
 moshiKotlinCodegen = "1.15.2"
 datastorePreferences = "1.2.1"
 material = "1.13.0"
+coreSplashscreen = "1.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,9 +80,9 @@ moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.re
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshiKotlinCodegen" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "googleDevtoolsKsp" }
-
