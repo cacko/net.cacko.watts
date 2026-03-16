@@ -65,7 +65,7 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun WattsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Changed to false to prioritize custom Typography and colors
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

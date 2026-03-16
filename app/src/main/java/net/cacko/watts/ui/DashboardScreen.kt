@@ -50,7 +50,7 @@ fun DashboardContent(metrics: BatteryMetrics) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Watts", fontWeight = FontWeight.Bold) },
+                title = { Text("WATTS", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 )
