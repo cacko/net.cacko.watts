@@ -27,10 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.cacko.watts.data.BatteryMetrics
+import net.cacko.watts.ui.theme.WattsTheme
 import java.util.Locale
 import kotlin.math.abs
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(viewModel: MainViewModel) {
     val metrics by viewModel.batteryMetrics.collectAsStateWithLifecycle()
@@ -51,7 +51,7 @@ fun DashboardContent(metrics: BatteryMetrics) {
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Watts", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 )
             )
@@ -71,7 +71,6 @@ fun DashboardContent(metrics: BatteryMetrics) {
                 )
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
             Column(
                 modifier = Modifier
@@ -253,15 +252,20 @@ fun getEnergyColor(metrics: BatteryMetrics): Color {
 @Preview(showBackground = true, device = "spec:width=411dp,height=891dp")
 @Composable
 fun DashboardPreview() {
-    MaterialTheme {
-        DashboardContent(
-            metrics = BatteryMetrics(
-                currentMa = 4500,
-                voltageMv = 4200,
-                temperatureC = 35.5f,
-                capacityPercent = 85,
-                isCharging = true
+    WattsTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            DashboardContent(
+                metrics = BatteryMetrics(
+                    currentMa = 4500,
+                    voltageMv = 4200,
+                    temperatureC = 35.5f,
+                    capacityPercent = 85,
+                    isCharging = true
+                )
             )
-        )
+        }
     }
 }

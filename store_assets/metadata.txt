@@ -1,0 +1,29 @@
+# Google Play Store Metadata
+
+## App Title (Max 30 chars)
+Watts: Real-time Power Meter
+
+## Short Description (Max 80 chars)
+Monitor live wattage, charging speed, and battery health with a dynamic UI.
+
+## Full Description (Max 4000 chars)
+Watts is a modern, lightweight utility designed for users who want to understand their device's power consumption and charging performance in detail.
+
+Built with the latest Jetpack Compose and Material 3 standards, Watts provides a beautiful, fluid interface that changes color based on your energy state.
+
+Key Features:
+- Real-time Wattage: See exactly how many Watts your device is using or receiving.
+- Charging Intelligence: Automatically detects charging speeds (Slow, Medium, Fast, Super Fast) with visual indicators.
+- Live Metrics: Monitor Current (mA), Voltage (V), and Battery Temperature (°C) in real-time.
+- Minimalist Design: A clean, ad-free dashboard focused on the data you need.
+- Battery Health: Keep an eye on your battery capacity and status.
+
+Whether you're testing a new charger, a different cable, or just curious about your device's energy footprint, Watts gives you the transparency you need.
+
+## Categorization
+Category: Tools / Personalization
+Content Rating: Everyone
+
+## Contact Info
+Website: https://github.com/cacko/net.cacko.watts
+Support Email: (Your Email)
