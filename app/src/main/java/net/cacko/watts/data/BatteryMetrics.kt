@@ -5,7 +5,10 @@ data class BatteryMetrics(
     val voltageMv: Int = 0,
     val temperatureC: Float = 0f,
     val capacityPercent: Int = 0,
-    val isCharging: Boolean = false
+    val isCharging: Boolean = false,
+    val health: String = "Unknown",
+    val chargeTimeRemainingMs: Long = -1,
+    val dischargeTimeRemainingMs: Long = -1
 ) {
     val watts: Float
         get() = (voltageMv / 1000f) * (currentMa / 1000f)

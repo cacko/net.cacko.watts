@@ -63,6 +63,7 @@ class BatteryRepositoryImpl(
         val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
         val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+        val healthRaw = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, BatteryManager.BATTERY_HEALTH_UNKNOWN)
 
         val capacityPercent = if (level != -1 && scale != -1) {
             (level * 100 / scale.toFloat()).toInt()
@@ -73,13 +74,47 @@ class BatteryRepositoryImpl(
 
         val currentUa = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         val currentMa = currentUa / 1000
+        
+        val chargeTimeRemainingMs = if (isCharging) {
+            batteryManager.computeChargeTimeRemaining()
+        } else {
+            -1L
+        }
+
+        // Estimate discharge time
+        val dischargeTimeRemainingMs = if (!isCharging && currentMa < 0) {
+            val remainingMaH = (capacityPercent / 100f) * 4500 // Assuming 4500mAh for now, could be dynamic
+            val dischargeCurrentMa = abs(currentMa.toFloat())
+            if (dischargeCurrentMa > 0) {
+                (remainingMaH / dischargeCurrentMa * 3600 * 1000).toLong()
+            } else {
+                -1L
+            }
+        } else {
+            -1L
+        }
+
+        val health = when (healthRaw) {
+            BatteryManager.BATTERY_HEALTH_GOOD -> "Good"
+            BatteryManager.BATTERY_HEALTH_OVERHEAT -> "Overheat"
+            BatteryManager.BATTERY_HEALTH_DEAD -> "Dead"
+            BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE -> "Over Voltage"
+            BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE -> "Failure"
+            BatteryManager.BATTERY_HEALTH_COLD -> "Cold"
+            else -> "Unknown"
+        }
 
         return BatteryMetrics(
             currentMa = currentMa,
             voltageMv = voltageMv,
             temperatureC = temperatureRaw / 10f,
             capacityPercent = capacityPercent,
-            isCharging = isCharging
+            isCharging = isCharging,
+            health = health,
+            chargeTimeRemainingMs = chargeTimeRemainingMs,
+            dischargeTimeRemainingMs = dischargeTimeRemainingMs
         )
     }
+
+    private fun abs(value: Float): Float = if (value < 0) -value else value
 }

@@ -11,7 +11,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.DeviceThermostat
 import androidx.compose.material.icons.filled.ElectricBolt
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.filled.HourglassFull
 import androidx.compose.material.icons.filled.Power
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +34,7 @@ import net.cacko.watts.data.BatteryMetrics
 import net.cacko.watts.ui.theme.MajorMonoDisplayFontFamily
 import net.cacko.watts.ui.theme.WattsTheme
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 @Composable
@@ -56,9 +61,9 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         text = "WATTS", 
                         style = MaterialTheme.typography.displayLarge.copy(
                             fontFamily = MajorMonoDisplayFontFamily,
-                            fontWeight = FontWeight.Normal
+                            fontWeight = FontWeight.Bold
                         )
-                    ) 
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
@@ -95,15 +100,9 @@ fun DashboardContent(metrics: BatteryMetrics) {
                 // Battery Metrics Grid
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Live Metrics",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -139,9 +138,46 @@ fun DashboardContent(metrics: BatteryMetrics) {
                             modifier = Modifier.weight(1f)
                         )
                     }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        MetricCard(
+                            label = "Health",
+                            value = metrics.health,
+                            icon = Icons.Default.Favorite,
+                            modifier = Modifier.weight(1f)
+                        )
+                        
+                        val timeLabel = if (metrics.isCharging) "Charged In" else "Remaining"
+                        val timeValue = if (metrics.isCharging) {
+                            if (metrics.chargeTimeRemainingMs > 0) formatRemainingTime(metrics.chargeTimeRemainingMs) else "Calculating..."
+                        } else {
+                            if (metrics.dischargeTimeRemainingMs > 0) formatRemainingTime(metrics.dischargeTimeRemainingMs) else "Calculating..."
+                        }
+                        val timeIcon = if (metrics.isCharging) Icons.Default.HourglassEmpty else Icons.Default.HourglassFull
+
+                        MetricCard(
+                            label = timeLabel,
+                            value = timeValue,
+                            icon = timeIcon,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+private fun formatRemainingTime(ms: Long): String {
+    val hours = TimeUnit.MILLISECONDS.toHours(ms)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60
+    return if (hours > 0) {
+        String.format(Locale.getDefault(), "%dh %02dm", hours, minutes)
+    } else {
+        String.format(Locale.getDefault(), "%dm", minutes)
     }
 }
 
@@ -177,32 +213,26 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
                     color = color.copy(alpha = 0.7f),
                     letterSpacing = 4.sp
                 )
-            }
-        }
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            color = color.copy(alpha = 0.1f),
-            modifier = Modifier.clip(RoundedCornerShape(24.dp))
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(
-                    imageVector = if (isCharging) Icons.Default.Power else Icons.Default.ElectricBolt,
-                    contentDescription = null,
-                    tint = color
-                )
-                Text(
-                    text = if (isCharging) "CHARGING" else "DISCHARGING",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = color
-                )
+                
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isCharging) Icons.Default.Power else Icons.Default.ElectricBolt,
+                        contentDescription = null,
+                        tint = color,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = if (isCharging) "CHARGING" else "DISCHARGING",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = color
+                    )
+                }
             }
         }
     }
@@ -221,25 +251,28 @@ fun MetricCard(label: String, value: String, icon: ImageVector, modifier: Modifi
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
-            )
-            Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Text(
-                    text = value,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
             }
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
@@ -273,7 +306,9 @@ fun DashboardPreview() {
                     voltageMv = 4200,
                     temperatureC = 35.5f,
                     capacityPercent = 85,
-                    isCharging = true
+                    isCharging = true,
+                    health = "Good",
+                    chargeTimeRemainingMs = 3600000
                 )
             )
         }
