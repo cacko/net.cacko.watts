@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.cacko.watts.data.BatteryMetrics
+import net.cacko.watts.ui.theme.MajorMonoDisplayFontFamily
 import net.cacko.watts.ui.theme.WattsTheme
 import java.util.Locale
 import kotlin.math.abs
@@ -50,7 +51,15 @@ fun DashboardContent(metrics: BatteryMetrics) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("WATTS", fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = "WATTS", 
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontFamily = MajorMonoDisplayFontFamily,
+                            fontWeight = FontWeight.Normal
+                        )
+                    ) 
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 )
@@ -159,6 +168,7 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
                         fontSize = 64.sp,
                         fontWeight = FontWeight.Black
                     ),
+                    letterSpacing = 0.5.sp,
                     color = color
                 )
                 Text(
