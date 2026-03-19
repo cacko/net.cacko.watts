@@ -190,13 +190,13 @@ private fun formatRemainingTime(ms: Long): String {
 fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
     val displayWatts = abs(watts)
     
-    val infiniteTransition = rememberInfiniteTransition(label = "ChargingAnimation")
+    val infiniteTransition = rememberInfiniteTransition(label = "EnergyAnimation")
     
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = if (isCharging) 1.15f else 1f,
+        targetValue = if (isCharging) 1.15f else 1.05f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = FastOutSlowInEasing),
+            animation = tween(if (isCharging) 1500 else 3000, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "PulseScale"
@@ -204,9 +204,9 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
     
     val pulseAlpha by infiniteTransition.animateFloat(
         initialValue = 0.05f,
-        targetValue = if (isCharging) 0.3f else 0.05f,
+        targetValue = if (isCharging) 0.3f else 0.15f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = FastOutSlowInEasing),
+            animation = tween(if (isCharging) 1500 else 3000, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "PulseAlpha"
@@ -214,9 +214,9 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
 
     val rotation by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = 360f,
+        targetValue = if (isCharging) 360f else -360f,
         animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = LinearEasing),
+            animation = tween(if (isCharging) 3000 else 6000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
         label = "Rotation"
@@ -231,17 +231,17 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
             modifier = Modifier.size(240.dp)
         ) {
             // Animated background pulse
-            if (isCharging) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .scale(pulseScale)
-                        .clip(CircleShape)
-                        .background(color.copy(alpha = pulseAlpha))
-                )
-                
-                // Rotating ring
-                Canvas(modifier = Modifier.fillMaxSize().rotate(rotation)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .scale(pulseScale)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = pulseAlpha))
+            )
+            
+            // Rotating ring (dashed for charging, solid/slow for discharging)
+            Canvas(modifier = Modifier.fillMaxSize().rotate(rotation)) {
+                if (isCharging) {
                     drawCircle(
                         color = color,
                         radius = size.minDimension / 2 - 4.dp.toPx(),
@@ -250,6 +250,15 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
                             pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f)
                         ),
                         alpha = 0.5f
+                    )
+                } else {
+                    drawCircle(
+                        color = color,
+                        radius = size.minDimension / 2 - 4.dp.toPx(),
+                        style = Stroke(
+                            width = 1.dp.toPx()
+                        ),
+                        alpha = 0.2f
                     )
                 }
             }
