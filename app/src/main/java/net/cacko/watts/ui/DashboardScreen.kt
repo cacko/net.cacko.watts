@@ -1,6 +1,8 @@
 package net.cacko.watts.ui
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,11 +23,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -185,53 +190,114 @@ private fun formatRemainingTime(ms: Long): String {
 fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
     val displayWatts = abs(watts)
     
+    val infiniteTransition = rememberInfiniteTransition(label = "ChargingAnimation")
+    
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = if (isCharging) 1.15f else 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "PulseScale"
+    )
+    
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.05f,
+        targetValue = if (isCharging) 0.3f else 0.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "PulseAlpha"
+    )
+
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "Rotation"
+    )
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(vertical = 32.dp)
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(240.dp)
-                .clip(CircleShape)
-                .background(color.copy(alpha = 0.1f))
-                .padding(16.dp)
+            modifier = Modifier.size(240.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = String.format(Locale.getDefault(), "%.1f", displayWatts),
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = 64.sp,
-                        fontWeight = FontWeight.Black
-                    ),
-                    letterSpacing = 0.5.sp,
-                    color = color
-                )
-                Text(
-                    text = "WATTS",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = color.copy(alpha = 0.7f),
-                    letterSpacing = 4.sp
+            // Animated background pulse
+            if (isCharging) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .scale(pulseScale)
+                        .clip(CircleShape)
+                        .background(color.copy(alpha = pulseAlpha))
                 )
                 
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Icon(
-                        imageVector = if (isCharging) Icons.Default.Power else Icons.Default.ElectricBolt,
-                        contentDescription = null,
-                        tint = color,
-                        modifier = Modifier.size(18.dp)
+                // Rotating ring
+                Canvas(modifier = Modifier.fillMaxSize().rotate(rotation)) {
+                    drawCircle(
+                        color = color,
+                        radius = size.minDimension / 2 - 4.dp.toPx(),
+                        style = Stroke(
+                            width = 2.dp.toPx(),
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f)
+                        ),
+                        alpha = 0.5f
                     )
+                }
+            }
+            
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(210.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.15f))
+                    .padding(16.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = if (isCharging) "CHARGING" else "DISCHARGING",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
+                        text = String.format(Locale.getDefault(), "%.1f", displayWatts),
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontSize = 64.sp,
+                            fontWeight = FontWeight.Black
+                        ),
+                        letterSpacing = 0.5.sp,
                         color = color
                     )
+                    Text(
+                        text = "WATTS",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = color.copy(alpha = 0.7f),
+                        letterSpacing = 4.sp
+                    )
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isCharging) Icons.Default.Power else Icons.Default.ElectricBolt,
+                            contentDescription = null,
+                            tint = color,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Text(
+                            text = if (isCharging) "CHARGING" else "DISCHARGING",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = color
+                        )
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ Watts is a modern Android application built with Jetpack Compose that provides r
 ## Features
 
 - **Real-time Wattage Tracking**: See exactly how many watts your device is pulling while charging or losing while discharging.
+- **Charging Animations**: Dynamic pulsing and rotating indicators that activate when the device is plugged in.
 - **Dynamic UI**: The interface background and colors adapt based on your charging state and speed (Slow, Medium, Fast, Super Fast).
 - **Detailed Metrics**:
     - Current (mA)
@@ -16,7 +17,7 @@ Watts is a modern Android application built with Jetpack Compose that provides r
 
 ## Project Structure
 
-- **Jetpack Compose**: UI built entirely with declarative components.
+- **Jetpack Compose**: UI built entirely with declarative components and advanced animations.
 - **Kotlin Coroutines & Flow**: For reactive state management of battery metrics.
 - **Material 3**: The latest Android design system.
 - **Go-Task Integration**: Automated build and deployment tasks.
