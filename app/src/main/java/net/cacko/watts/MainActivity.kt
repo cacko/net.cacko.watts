@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
         setContent {
             WattsTheme {
                 Surface(

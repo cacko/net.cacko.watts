@@ -5,6 +5,7 @@ Watts is a modern Android application built with Jetpack Compose that provides r
 ## Features
 
 - **Real-time Wattage Tracking**: See exactly how many watts your device is pulling while charging or losing while discharging.
+- **Quick Settings Tile**: Monitor live wattage and charging status directly from your device's Quick Settings panel. Click the tile to quickly open the app.
 - **Charging Animations**: Dynamic pulsing and rotating indicators that activate when the device is plugged in.
 - **Dynamic UI**: The interface background and colors adapt based on your charging state and speed (Slow, Medium, Fast, Super Fast).
 - **Detailed Metrics**:
