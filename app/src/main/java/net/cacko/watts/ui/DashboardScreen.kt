@@ -22,6 +22,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
@@ -57,6 +58,17 @@ fun DashboardContent(metrics: BatteryMetrics) {
         label = "EnergyColor"
     )
 
+    val infiniteTransition = rememberInfiniteTransition(label = "TitleAnimation")
+    val titleAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.6f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(if (metrics.isCharging) 1000 else 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "TitleAlpha"
+    )
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -66,8 +78,10 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         text = "WATTS", 
                         style = MaterialTheme.typography.displayLarge.copy(
                             fontFamily = MajorMonoDisplayFontFamily,
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                            color = if (metrics.isCharging) energyColor else MaterialTheme.colorScheme.onBackground
+                        ),
+                        modifier = Modifier.alpha(if (metrics.isCharging) 1f else titleAlpha)
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
