@@ -69,47 +69,49 @@ fun DashboardContent(metrics: BatteryMetrics) {
         label = "TitleAlpha"
     )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        text = "WATTS", 
-                        style = MaterialTheme.typography.displayLarge.copy(
-                            fontFamily = MajorMonoDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = if (metrics.isCharging) energyColor else MaterialTheme.colorScheme.onBackground
-                        ),
-                        modifier = Modifier.alpha(if (metrics.isCharging) 1f else titleAlpha)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        energyColor.copy(alpha = 0.2f),
+                        MaterialTheme.colorScheme.background
                     )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
                 )
             )
-        },
-        containerColor = Color.Transparent
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            energyColor.copy(alpha = 0.2f),
-                            MaterialTheme.colorScheme.background
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = { 
+                        Text(
+                            text = "WATTS", 
+                            style = MaterialTheme.typography.displayLarge.copy(
+                                fontFamily = MajorMonoDisplayFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                color = if (metrics.isCharging) energyColor else MaterialTheme.colorScheme.onBackground
+                            ),
+                            modifier = Modifier.alpha(if (metrics.isCharging) 1f else titleAlpha)
                         )
-                    )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        scrolledContainerColor = Color.Transparent
+                    ),
+                    windowInsets = WindowInsets.statusBars // Explicitly handle status bar insets
                 )
-                .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
-        ) {
+            },
+            containerColor = Color.Transparent
+        ) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(24.dp),
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
@@ -185,6 +187,9 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         )
                     }
                 }
+                
+                // Add some space at the bottom to avoid navigation bar overlap if needed
+                Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
             }
         }
     }
