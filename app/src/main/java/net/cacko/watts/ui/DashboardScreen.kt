@@ -15,9 +15,8 @@ import androidx.compose.material.icons.filled.DeviceThermostat
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FlashOn
-import androidx.compose.material.icons.filled.HourglassEmpty
-import androidx.compose.material.icons.filled.HourglassFull
 import androidx.compose.material.icons.filled.Power
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,7 +39,6 @@ import net.cacko.watts.data.BatteryMetrics
 import net.cacko.watts.ui.theme.MajorMonoDisplayFontFamily
 import net.cacko.watts.ui.theme.WattsTheme
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 @Composable
@@ -100,7 +98,7 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent
                     ),
-                    windowInsets = WindowInsets.statusBars // Explicitly handle status bar insets
+                    windowInsets = WindowInsets.statusBars
                 )
             },
             containerColor = Color.Transparent
@@ -170,38 +168,19 @@ fun DashboardContent(metrics: BatteryMetrics) {
                             icon = Icons.Default.Favorite,
                             modifier = Modifier.weight(1f)
                         )
-                        
-                        val timeLabel = if (metrics.isCharging) "Charged In" else "Remaining"
-                        val timeValue = if (metrics.isCharging) {
-                            if (metrics.chargeTimeRemainingMs > 0) formatRemainingTime(metrics.chargeTimeRemainingMs) else "Calculating..."
-                        } else {
-                            if (metrics.dischargeTimeRemainingMs > 0) formatRemainingTime(metrics.dischargeTimeRemainingMs) else "Calculating..."
-                        }
-                        val timeIcon = if (metrics.isCharging) Icons.Default.HourglassEmpty else Icons.Default.HourglassFull
 
                         MetricCard(
-                            label = timeLabel,
-                            value = timeValue,
-                            icon = timeIcon,
+                            label = "Cycles",
+                            value = if (metrics.cycleCount >= 0) metrics.cycleCount.toString() else "--",
+                            icon = Icons.Default.Refresh,
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
                 
-                // Add some space at the bottom to avoid navigation bar overlap if needed
                 Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
             }
         }
-    }
-}
-
-private fun formatRemainingTime(ms: Long): String {
-    val hours = TimeUnit.MILLISECONDS.toHours(ms)
-    val minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60
-    return if (hours > 0) {
-        String.format(Locale.getDefault(), "%dh %02dm", hours, minutes)
-    } else {
-        String.format(Locale.getDefault(), "%dm", minutes)
     }
 }
 
@@ -402,7 +381,7 @@ fun DashboardPreview() {
                     capacityPercent = 85,
                     isCharging = true,
                     health = "Good",
-                    chargeTimeRemainingMs = 3600000
+                    cycleCount = 142
                 )
             )
         }

@@ -72,26 +72,19 @@ class BatteryRepositoryImpl(
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL
 
-        val currentUa = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        val currentUa = try {
+            batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        } catch (e: SecurityException) {
+            0
+        }
         val currentMa = currentUa / 1000
         
-        val chargeTimeRemainingMs = if (isCharging) {
-            batteryManager.computeChargeTimeRemaining()
-        } else {
-            -1L
-        }
-
-        // Estimate discharge time
-        val dischargeTimeRemainingMs = if (!isCharging && currentMa < 0) {
-            val remainingMaH = (capacityPercent / 100f) * 4500 // Assuming 4500mAh for now, could be dynamic
-            val dischargeCurrentMa = abs(currentMa.toFloat())
-            if (dischargeCurrentMa > 0) {
-                (remainingMaH / dischargeCurrentMa * 3600 * 1000).toLong()
-            } else {
-                -1L
-            }
-        } else {
-            -1L
+        // BATTERY_PROPERTY_CYCLE_COUNT is 8, added in API 34
+        // This may require BATTERY_STATS permission which is restricted to system apps
+        val cycleCount = try {
+            batteryManager.getIntProperty(8)
+        } catch (e: SecurityException) {
+            -1
         }
 
         val health = when (healthRaw) {
@@ -111,10 +104,7 @@ class BatteryRepositoryImpl(
             capacityPercent = capacityPercent,
             isCharging = isCharging,
             health = health,
-            chargeTimeRemainingMs = chargeTimeRemainingMs,
-            dischargeTimeRemainingMs = dischargeTimeRemainingMs
+            cycleCount = cycleCount
         )
     }
-
-    private fun abs(value: Float): Float = if (value < 0) -value else value
 }
