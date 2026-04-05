@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.os.PowerManager
+import android.telephony.TelephonyManager
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +25,8 @@ class BatteryRepositoryImpl(
 ) : BatteryRepository {
 
     private val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+    private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+    private val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
     override fun getBatteryMetrics(): Flow<BatteryMetrics> = callbackFlow {
         val receiver = object : BroadcastReceiver() {
@@ -79,13 +83,28 @@ class BatteryRepositoryImpl(
         }
         val currentMa = currentUa / 1000
         
-        // BATTERY_PROPERTY_CYCLE_COUNT is 8, added in API 34
-        // This may require BATTERY_STATS permission which is restricted to system apps
-        val cycleCount = try {
-            batteryManager.getIntProperty(8)
+        val radioSignalDbm = try {
+            telephonyManager.signalStrength?.cellSignalStrengths?.firstOrNull()?.dbm
         } catch (e: SecurityException) {
-            -1
+            null
         }
+
+        // BATTERY_PROPERTY_CHARGING_POLICY is 9, added in API 34
+        val chargingPolicyRaw = try {
+            batteryManager.getIntProperty(9)
+        } catch (e: Exception) {
+            0
+        }
+
+        val chargingPolicy = when (chargingPolicyRaw) {
+            1 -> "Default"
+            2 -> "Adaptive"
+            3 -> "Longevity"
+            else -> null
+        }
+
+        val isPowerSaveMode = powerManager.isPowerSaveMode
+        val isInteractive = powerManager.isInteractive
 
         val health = when (healthRaw) {
             BatteryManager.BATTERY_HEALTH_GOOD -> "Good"
@@ -104,7 +123,10 @@ class BatteryRepositoryImpl(
             capacityPercent = capacityPercent,
             isCharging = isCharging,
             health = health,
-            cycleCount = cycleCount
+            radioSignalDbm = radioSignalDbm,
+            chargingPolicy = chargingPolicy,
+            isPowerSaveMode = isPowerSaveMode,
+            isInteractive = isInteractive
         )
     }
 }

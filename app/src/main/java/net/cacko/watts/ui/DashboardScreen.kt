@@ -12,11 +12,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.DeviceThermostat
+import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Power
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SignalCellularAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -170,9 +173,37 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         )
 
                         MetricCard(
-                            label = "Cycles",
-                            value = if (metrics.cycleCount >= 0) metrics.cycleCount.toString() else "--",
-                            icon = Icons.Default.Refresh,
+                            label = "Radio Signal",
+                            value = metrics.radioSignalDbm?.let { "$it dBm" } ?: "--",
+                            icon = Icons.Default.SignalCellularAlt,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    if (metrics.chargingPolicy != null) {
+                        MetricCard(
+                            label = "Charging Policy",
+                            value = metrics.chargingPolicy,
+                            icon = Icons.Default.BatteryChargingFull,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        MetricCard(
+                            label = "Battery Saver",
+                            value = if (metrics.isPowerSaveMode) "Active" else "Off",
+                            icon = Icons.Default.Power,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        MetricCard(
+                            label = "Device State",
+                            value = if (metrics.isInteractive) "Awake" else "Idling",
+                            icon = Icons.Default.NotificationsActive,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -381,7 +412,10 @@ fun DashboardPreview() {
                     capacityPercent = 85,
                     isCharging = true,
                     health = "Good",
-                    cycleCount = 142
+                    radioSignalDbm = -95,
+                    chargingPolicy = "Adaptive",
+                    isPowerSaveMode = false,
+                    isInteractive = true
                 )
             )
         }

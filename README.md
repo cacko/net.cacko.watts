@@ -14,7 +14,9 @@ Watts is a modern Android application built with Jetpack Compose that provides r
     - Battery Temperature (°C)
     - Battery Capacity (%)
     - Battery Health (Good, Overheat, etc.)
-    - Charge Cycles (On supported devices)
+    - Radio Signal Strength (dBm)
+    - Charging Policy (Adaptive/Longevity on Android 14+)
+    - Power Status (Battery Saver & Device State)
 - **Material 3 Design**: Fully leverages Material 3 components and dynamic styling.
 - **Resilient to Permissions**: Gracefully handles restricted system-level battery metrics (like `BATTERY_STATS`) by providing fallback values instead of crashing.
 - **Edge-to-Edge**: Modern immersive display support.

@@ -4,7 +4,7 @@
 Watts: Real-time Power Meter
 
 ## Short Description (Max 80 chars)
-Monitor live wattage, charging speed, and battery health with a dynamic UI.
+Monitor live wattage, charging speed, and power status with a dynamic UI.
 
 ## Full Description (Max 4000 chars)
 Watts is a modern, lightweight utility designed for users who want to understand their device's power consumption and charging performance in detail.
@@ -14,10 +14,12 @@ Built with the latest Jetpack Compose and Material 3 standards, Watts provides a
 Key Features:
 - Real-time Wattage: See exactly how many Watts your device is using or receiving.
 - Charging Intelligence: Automatically detects charging speeds (Slow, Medium, Fast, Super Fast) with visual indicators.
-- Live Metrics: Monitor Current (mA), Voltage (V), Battery Temperature (°C), and Charge Cycles in real-time.
+- Live Metrics: Monitor Current (mA), Voltage (V), Battery Temperature (°C), and Radio Signal Strength (dBm).
+- Power Status: Keep track of Battery Saver mode and Device Interactivity (Awake/Idling) states.
+- Charging Policy: View Android 14+ charging modes like Adaptive Charging and Longevity mode.
 - Minimalist Design: A clean, ad-free dashboard focused on the data you need.
 - Device Compatibility: Resilient to system permission restrictions, providing a smooth experience across various Android versions.
-- Battery Health: Keep an eye on your battery health, capacity, and cycle counts.
+- Battery Health: Keep an eye on your battery health and capacity.
 
 Whether you're testing a new charger, a different cable, or just curious about your device's energy footprint, Watts gives you the transparency you need.
 
