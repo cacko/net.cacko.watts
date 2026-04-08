@@ -1,3 +1,46 @@
 <resources>
     <string name="app_name">Watts</string>
+    <string name="ok">Got it</string>
+
+    <!-- Metric Labels -->
+    <string name="label_current">Current</string>
+    <string name="label_voltage">Voltage</string>
+    <string name="label_temperature">Temperature</string>
+    <string name="label_capacity">Capacity</string>
+    <string name="label_battery_size">Battery Size</string>
+    <string name="label_health">Health</string>
+    <string name="label_technology">Technology</string>
+    <string name="label_powered">Powered</string>
+
+    <!-- Metric Descriptions -->
+    <string name="desc_current">The amount of electric current flowing into or out of the battery. Positive values indicate charging, while negative values indicate the device is using battery power.</string>
+    <string name="desc_voltage">The electrical pressure provided by the battery. A typical smartphone battery operates between 3.2V (empty) and 4.4V (full).</string>
+    <string name="desc_temperature">The current temperature of the battery. Keeping your battery cool (below 35°C / 95°F) helps prolong its total lifespan.</string>
+    <string name="desc_capacity">The current amount of energy stored in the battery as a percentage of its estimated full capacity.</string>
+    <string name="desc_battery_size">The estimated total energy capacity of your battery. This value is calculated by comparing the current charge counter with the percentage level.</string>
+    <string name="desc_health">The system\'s report on the physical condition of the battery. Most devices report \'Good\' unless there is a hardware failure or significant degradation.</string>
+    <string name="desc_technology">The chemical technology used in the battery. Most modern smartphones use Lithium-ion (Li-ion) or Lithium-polymer (Li-poly) cells.</string>
+    <string name="desc_powered">The source of power currently connected to the device. \'Battery\' means the device is not plugged in.</string>
+
+    <!-- Health States -->
+    <string name="health_good">Good</string>
+    <string name="health_overheat">Overheat</string>
+    <string name="health_dead">Dead</string>
+    <string name="health_over_voltage">Over Voltage</string>
+    <string name="health_failure">Failure</string>
+    <string name="health_cold">Cold</string>
+    <string name="health_unknown">Unknown</string>
+
+    <!-- Plugged Sources -->
+    <string name="source_ac">AC</string>
+    <string name="source_usb">USB</string>
+    <string name="source_wireless">Wireless</string>
+    <string name="source_dock">Dock</string>
+    <string name="source_battery">Battery</string>
+    <string name="source_unknown">Unknown</string>
+
+    <!-- UI Elements -->
+    <string name="unit_watts">WATTS</string>
+    <string name="state_charging">CHARGING</string>
+    <string name="state_discharging">DISCHARGING</string>
 </resources>

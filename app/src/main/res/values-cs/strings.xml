@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Watts</string>
+    <string name="ok">Rozumím</string>
+
+    <!-- Metric Labels -->
+    <string name="label_current">Proud</string>
+    <string name="label_voltage">Napětí</string>
+    <string name="label_temperature">Teplota</string>
+    <string name="label_capacity">Kapacita</string>
+    <string name="label_battery_size">Velikost baterie</string>
+    <string name="label_health">Stav</string>
+    <string name="label_technology">Technologie</string>
+    <string name="label_powered">Napájení</string>
+
+    <!-- Metric Descriptions -->
+    <string name="desc_current">Množství elektrického proudu tekoucího do nebo z baterie. Kladné hodnoty značí nabíjení, záporné hodnoty značí, že zařízení využívá energii z baterie.</string>
+    <string name="desc_voltage">Elektrické napětí poskytované baterií. Typická baterie chytrého telefonu pracuje mezi 3,2 V (vybitá) a 4,4 V (plná).</string>
+    <string name="desc_temperature">Aktuální teplota baterie. Udržování baterie v chladu (pod 35 °C / 95 °F) pomáhá prodloužit její celkovou životnost.</string>
+    <string name="desc_capacity">Aktuální množství energie uložené v baterii jako procento její odhadované plné kapacity.</string>
+    <string name="desc_battery_size">Odhadovaná celková energetická kapacita vaší baterie. Tato hodnota se vypočítá porovnáním aktuálního počitadla nabití s procentuální úrovní.</string>
+    <string name="desc_health">Hlášení systému o fyzickém stavu baterie. Většina zařízení hlásí „Dobrý“, pokud nedojde k hardwarové chybě nebo výrazné degradaci.</string>
+    <string name="desc_technology">Chemická technologie použitá v baterii. Většina moderních chytrých telefonů používá lithium-iontové (Li-ion) nebo lithium-polymerové (Li-poly) články.</string>
+    <string name="desc_powered">Zdroj napájení aktuálně připojený k zařízení. „Baterie“ znamená, že zařízení není zapojeno.</string>
+
+    <!-- Health States -->
+    <string name="health_good">Dobrý</string>
+    <string name="health_overheat">Přehřátí</string>
+    <string name="health_dead">Nefunkční</string>
+    <string name="health_over_voltage">Přepětí</string>
+    <string name="health_failure">Porucha</string>
+    <string name="health_cold">Studená</string>
+    <string name="health_unknown">Neznámý</string>
+
+    <!-- Plugged Sources -->
+    <string name="source_ac">Síť</string>
+    <string name="source_usb">USB</string>
+    <string name="source_wireless">Bezdrátové</string>
+    <string name="source_dock">Dokovací stanice</string>
+    <string name="source_battery">Baterie</string>
+    <string name="source_unknown">Neznámý</string>
+
+    <!-- UI Elements -->
+    <string name="unit_watts">WATTŮ</string>
+    <string name="state_charging">NABÍJENÍ</string>
+    <string name="state_discharging">VYBÍJENÍ</string>
+</resources>

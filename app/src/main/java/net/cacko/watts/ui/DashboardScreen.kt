@@ -69,7 +69,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import net.cacko.watts.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.cacko.watts.data.BatteryMetrics
 import net.cacko.watts.ui.theme.MajorMonoDisplayFontFamily
@@ -101,7 +104,7 @@ fun DashboardContent(metrics: BatteryMetrics) {
             text = { Text(text = selectedMetricInfo!!.second) },
             confirmButton = {
                 TextButton(onClick = { selectedMetricInfo = null }) {
-                    Text("Got it")
+                    Text(stringResource(R.string.ok))
                 }
             },
             shape = RoundedCornerShape(28.dp)
@@ -137,7 +140,7 @@ fun DashboardContent(metrics: BatteryMetrics) {
                 CenterAlignedTopAppBar(
                     title = { 
                         Text(
-                            text = "WATTS", 
+                            text = stringResource(R.string.app_name),
                             style = MaterialTheme.typography.displayLarge.copy(
                                 fontFamily = MajorMonoDisplayFontFamily,
                                 fontWeight = FontWeight.Bold,
@@ -174,26 +177,43 @@ fun DashboardContent(metrics: BatteryMetrics) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val currentLabel = stringResource(R.string.label_current)
+                    val currentDesc = stringResource(R.string.desc_current)
+                    val voltageLabel = stringResource(R.string.label_voltage)
+                    val voltageDesc = stringResource(R.string.desc_voltage)
+                    val temperatureLabel = stringResource(R.string.label_temperature)
+                    val temperatureDesc = stringResource(R.string.desc_temperature)
+                    val capacityLabel = stringResource(R.string.label_capacity)
+                    val capacityDesc = stringResource(R.string.desc_capacity)
+                    val batterySizeLabel = stringResource(R.string.label_battery_size)
+                    val batterySizeDesc = stringResource(R.string.desc_battery_size)
+                    val healthLabel = stringResource(R.string.label_health)
+                    val healthDesc = stringResource(R.string.desc_health)
+                    val technologyLabel = stringResource(R.string.label_technology)
+                    val technologyDesc = stringResource(R.string.desc_technology)
+                    val poweredLabel = stringResource(R.string.label_powered)
+                    val poweredDesc = stringResource(R.string.desc_powered)
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         MetricCard(
-                            label = "Current",
+                            label = currentLabel,
                             value = "${metrics.currentMa} mA",
                             icon = Icons.Default.ElectricBolt,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Current" to "The amount of electric current flowing into or out of the battery. Positive values indicate charging, while negative values indicate the device is using battery power."
+                                selectedMetricInfo = currentLabel to currentDesc
                             }
                         )
                         MetricCard(
-                            label = "Voltage",
+                            label = voltageLabel,
                             value = String.format(Locale.getDefault(), "%.2f V", metrics.voltageMv / 1000f),
                             icon = Icons.Default.Bolt,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Voltage" to "The electrical pressure provided by the battery. A typical smartphone battery operates between 3.2V (empty) and 4.4V (full)."
+                                selectedMetricInfo = voltageLabel to voltageDesc
                             }
                         )
                     }
@@ -203,21 +223,21 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         MetricCard(
-                            label = "Temperature",
+                            label = temperatureLabel,
                             value = "${metrics.temperatureC} °C",
                             icon = Icons.Default.DeviceThermostat,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Temperature" to "The current temperature of the battery. Keeping your battery cool (below 35°C / 95°F) helps prolong its total lifespan."
+                                selectedMetricInfo = temperatureLabel to temperatureDesc
                             }
                         )
                         MetricCard(
-                            label = "Capacity",
+                            label = capacityLabel,
                             value = "${metrics.capacityPercent}%",
                             icon = Icons.Default.FlashOn,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Capacity" to "The current amount of energy stored in the battery as a percentage of its estimated full capacity."
+                                selectedMetricInfo = capacityLabel to capacityDesc
                             }
                         )
                     }
@@ -227,21 +247,21 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         MetricCard(
-                            label = "Battery Size",
+                            label = batterySizeLabel,
                             value = metrics.batteryCapacityMah?.let { "$it mAh" } ?: "--",
                             icon = Icons.Default.BatteryFull,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Battery Size" to "The estimated total energy capacity of your battery. This value is calculated by comparing the current charge counter with the percentage level."
+                                selectedMetricInfo = batterySizeLabel to batterySizeDesc
                             }
                         )
                         MetricCard(
-                            label = "Health",
-                            value = metrics.health,
+                            label = healthLabel,
+                            value = translateHealth(metrics.health),
                             icon = Icons.Default.Favorite,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Health" to "The system's report on the physical condition of the battery. Most devices report 'Good' unless there is a hardware failure or significant degradation."
+                                selectedMetricInfo = healthLabel to healthDesc
                             }
                         )
                     }
@@ -251,21 +271,21 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         MetricCard(
-                            label = "Technology",
+                            label = technologyLabel,
                             value = metrics.technology ?: "--",
                             icon = Icons.Default.Memory,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Technology" to "The chemical technology used in the battery. Most modern smartphones use Lithium-ion (Li-ion) or Lithium-polymer (Li-poly) cells."
+                                selectedMetricInfo = technologyLabel to technologyDesc
                             }
                         )
                         MetricCard(
-                            label = "Powered",
-                            value = metrics.pluggedSource ?: "--",
+                            label = poweredLabel,
+                            value = translateSource(metrics.pluggedSource),
                             icon = Icons.Default.Power,
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                selectedMetricInfo = "Powered" to "The source of power currently connected to the device. 'Battery' means the device is not plugged in."
+                                selectedMetricInfo = poweredLabel to poweredDesc
                             }
                         )
                     }
@@ -373,7 +393,7 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
                         color = color
                     )
                     Text(
-                        text = "WATTS",
+                        text = stringResource(R.string.unit_watts),
                         style = MaterialTheme.typography.labelLarge,
                         color = color.copy(alpha = 0.7f),
                         letterSpacing = 4.sp
@@ -392,7 +412,7 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
                             modifier = Modifier.size(22.dp)
                         )
                         Text(
-                            text = if (isCharging) "CHARGING" else "DISCHARGING",
+                            text = stringResource(if (isCharging) R.string.state_charging else R.string.state_discharging),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = color
@@ -447,6 +467,31 @@ fun MetricCard(
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
+    }
+}
+
+@Composable
+fun translateHealth(health: String): String {
+    return when (health) {
+        "Good" -> stringResource(R.string.health_good)
+        "Overheat" -> stringResource(R.string.health_overheat)
+        "Dead" -> stringResource(R.string.health_dead)
+        "Over Voltage" -> stringResource(R.string.health_over_voltage)
+        "Failure" -> stringResource(R.string.health_failure)
+        "Cold" -> stringResource(R.string.health_cold)
+        else -> stringResource(R.string.health_unknown)
+    }
+}
+
+@Composable
+fun translateSource(source: String?): String {
+    return when (source) {
+        "AC" -> stringResource(R.string.source_ac)
+        "USB" -> stringResource(R.string.source_usb)
+        "Wireless" -> stringResource(R.string.source_wireless)
+        "Dock" -> stringResource(R.string.source_dock)
+        "Battery" -> stringResource(R.string.source_battery)
+        else -> stringResource(R.string.source_unknown)
     }
 }
 

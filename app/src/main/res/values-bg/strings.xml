@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Watts</string>
+    <string name="ok">Разбрах</string>
+
+    <!-- Metric Labels -->
+    <string name="label_current">Ток</string>
+    <string name="label_voltage">Напрежение</string>
+    <string name="label_temperature">Температура</string>
+    <string name="label_capacity">Капацитет</string>
+    <string name="label_battery_size">Размер на батерията</string>
+    <string name="label_health">Състояние</string>
+    <string name="label_technology">Технология</string>
+    <string name="label_powered">Захранване</string>
+
+    <!-- Metric Descriptions -->
+    <string name="desc_current">Количеството електрически ток, влизащ или излизащ от батерията. Положителните стойности показват зареждане, докато отрицателните показват, че устройството използва енергия от батерията.</string>
+    <string name="desc_voltage">Електрическото напрежение, осигурено от батерията. Типичната батерия на смартфон работи между 3.2V (празна) и 4.4V (пълна).</string>
+    <string name="desc_temperature">Текущата температура на батерията. Поддържането на батерията хладна (под 35°C / 95°F) помага за удължаване на общия й живот.</string>
+    <string name="desc_capacity">Текущото количество енергия, съхранено в батерията, като процент от нейния изчислен пълен капацитет.</string>
+    <string name="desc_battery_size">Очакваният общ енергиен капацитет на вашата батерия. Тази стойност се изчислява чрез сравняване на текущия брояч на заряда с процента на нивото.</string>
+    <string name="desc_health">Отчет на системата за физическото състояние на батерията. Повечето устройства отчитат „Добро“, освен ако няма хардуерна повреда или значително влошаване.</string>
+    <string name="desc_technology">Химическата технология, използвана в батерията. Повечето модерни смартфони използват литиево-йонни (Li-ion) или литиево-полимерни (Li-poly) клетки.</string>
+    <string name="desc_powered">Източникът на захранване, свързан в момента към устройството. „Батерия“ означава, че устройството не е включено в захранване.</string>
+
+    <!-- Health States -->
+    <string name="health_good">Добро</string>
+    <string name="health_overheat">Прегряване</string>
+    <string name="health_dead">Мъртва</string>
+    <string name="health_over_voltage">Свръхнапрежение</string>
+    <string name="health_failure">Повреда</string>
+    <string name="health_cold">Студена</string>
+    <string name="health_unknown">Неизвестно</string>
+
+    <!-- Plugged Sources -->
+    <string name="source_ac">AC</string>
+    <string name="source_usb">USB</string>
+    <string name="source_wireless">Безжично</string>
+    <string name="source_dock">Док станция</string>
+    <string name="source_battery">Батерия</string>
+    <string name="source_unknown">Неизвестно</string>
+
+    <!-- UI Elements -->
+    <string name="unit_watts">ВАТА</string>
+    <string name="state_charging">ЗАРЕЖДАНЕ</string>
+    <string name="state_discharging">РАЗРЕЖДАНЕ</string>
+</resources>

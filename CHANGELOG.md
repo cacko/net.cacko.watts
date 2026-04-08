@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4] - 2024-05-23
+
+### Added
+- **Localization**: Added support for Bulgarian (bg) and Czech (cs) languages.
+- **Resource Management**: Fully refactored the UI to use Android string resources, enabling easier future translations.
+
+### Changed
+- **Version Bump**: Updated app version to 1.4.
+
 ## [1.3] - 2024-05-22
 
 ### Added
