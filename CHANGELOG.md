@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3] - 2024-05-22
+
+### Added
+- **Interactive Metrics**: Tap any metric card to see a detailed explanation of what it means and how it affects your battery.
+- **Battery Size (mAh)**: Real-time calculation of your battery's full capacity in mAh.
+- **Battery Technology**: Visibility into the chemical composition of your battery (e.g., Li-ion, Li-poly).
+- **Power Source**: Clear indication of the current charging source (AC, USB, Wireless, Dock, or Battery).
+
+### Changed
+- **Refined Dashboard**: Optimized the metrics grid for better readability and a more focused user experience.
+- **Version Bump**: Updated app version to 1.3.
+
 ## [1.2] - 2024-05-21
 
 ### Added

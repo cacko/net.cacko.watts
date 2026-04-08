@@ -10,7 +10,12 @@ data class BatteryMetrics(
     val radioSignalDbm: Int? = null,
     val chargingPolicy: String? = null,
     val isPowerSaveMode: Boolean = false,
-    val isInteractive: Boolean = true
+    val isInteractive: Boolean = true,
+    val batteryCapacityMah: Int? = null,
+    val designCapacityMah: Int? = null,
+    val cycleCount: Int? = null,
+    val technology: String? = null,
+    val pluggedSource: String? = null
 ) {
     val watts: Float
         get() = (voltageMv / 1000f) * (currentMa / 1000f)

@@ -1,27 +1,60 @@
 package net.cacko.watts.ui
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BatteryFull
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.DeviceThermostat
-import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FlashOn
-import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Power
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.SignalCellularAlt
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -41,7 +74,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.cacko.watts.data.BatteryMetrics
 import net.cacko.watts.ui.theme.MajorMonoDisplayFontFamily
 import net.cacko.watts.ui.theme.WattsTheme
-import java.util.Locale
+import java.util.*
 import kotlin.math.abs
 
 @Composable
@@ -54,10 +87,26 @@ fun DashboardScreen(viewModel: MainViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardContent(metrics: BatteryMetrics) {
+    var selectedMetricInfo by remember { mutableStateOf<Pair<String, String>?>(null) }
+
     val energyColor by animateColorAsState(
         targetValue = getEnergyColor(metrics),
         label = "EnergyColor"
     )
+
+    if (selectedMetricInfo != null) {
+        AlertDialog(
+            onDismissRequest = { selectedMetricInfo = null },
+            title = { Text(text = selectedMetricInfo!!.first) },
+            text = { Text(text = selectedMetricInfo!!.second) },
+            confirmButton = {
+                TextButton(onClick = { selectedMetricInfo = null }) {
+                    Text("Got it")
+                }
+            },
+            shape = RoundedCornerShape(28.dp)
+        )
+    }
 
     val infiniteTransition = rememberInfiniteTransition(label = "TitleAnimation")
     val titleAlpha by infiniteTransition.animateFloat(
@@ -133,13 +182,19 @@ fun DashboardContent(metrics: BatteryMetrics) {
                             label = "Current",
                             value = "${metrics.currentMa} mA",
                             icon = Icons.Default.ElectricBolt,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Current" to "The amount of electric current flowing into or out of the battery. Positive values indicate charging, while negative values indicate the device is using battery power."
+                            }
                         )
                         MetricCard(
                             label = "Voltage",
                             value = String.format(Locale.getDefault(), "%.2f V", metrics.voltageMv / 1000f),
                             icon = Icons.Default.Bolt,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Voltage" to "The electrical pressure provided by the battery. A typical smartphone battery operates between 3.2V (empty) and 4.4V (full)."
+                            }
                         )
                     }
                     
@@ -151,13 +206,19 @@ fun DashboardContent(metrics: BatteryMetrics) {
                             label = "Temperature",
                             value = "${metrics.temperatureC} °C",
                             icon = Icons.Default.DeviceThermostat,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Temperature" to "The current temperature of the battery. Keeping your battery cool (below 35°C / 95°F) helps prolong its total lifespan."
+                            }
                         )
                         MetricCard(
                             label = "Capacity",
                             value = "${metrics.capacityPercent}%",
                             icon = Icons.Default.FlashOn,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Capacity" to "The current amount of energy stored in the battery as a percentage of its estimated full capacity."
+                            }
                         )
                     }
 
@@ -165,27 +226,23 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        MetricCard(
+                            label = "Battery Size",
+                            value = metrics.batteryCapacityMah?.let { "$it mAh" } ?: "--",
+                            icon = Icons.Default.BatteryFull,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Battery Size" to "The estimated total energy capacity of your battery. This value is calculated by comparing the current charge counter with the percentage level."
+                            }
+                        )
                         MetricCard(
                             label = "Health",
                             value = metrics.health,
                             icon = Icons.Default.Favorite,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        MetricCard(
-                            label = "Radio Signal",
-                            value = metrics.radioSignalDbm?.let { "$it dBm" } ?: "--",
-                            icon = Icons.Default.SignalCellularAlt,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-
-                    if (metrics.chargingPolicy != null) {
-                        MetricCard(
-                            label = "Charging Policy",
-                            value = metrics.chargingPolicy,
-                            icon = Icons.Default.BatteryChargingFull,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Health" to "The system's report on the physical condition of the battery. Most devices report 'Good' unless there is a hardware failure or significant degradation."
+                            }
                         )
                     }
 
@@ -194,17 +251,22 @@ fun DashboardContent(metrics: BatteryMetrics) {
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         MetricCard(
-                            label = "Battery Saver",
-                            value = if (metrics.isPowerSaveMode) "Active" else "Off",
-                            icon = Icons.Default.Power,
-                            modifier = Modifier.weight(1f)
+                            label = "Technology",
+                            value = metrics.technology ?: "--",
+                            icon = Icons.Default.Memory,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Technology" to "The chemical technology used in the battery. Most modern smartphones use Lithium-ion (Li-ion) or Lithium-polymer (Li-poly) cells."
+                            }
                         )
-
                         MetricCard(
-                            label = "Device State",
-                            value = if (metrics.isInteractive) "Awake" else "Idling",
-                            icon = Icons.Default.NotificationsActive,
-                            modifier = Modifier.weight(1f)
+                            label = "Powered",
+                            value = metrics.pluggedSource ?: "--",
+                            icon = Icons.Default.Power,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                selectedMetricInfo = "Powered" to "The source of power currently connected to the device. 'Battery' means the device is not plugged in."
+                            }
                         )
                     }
                 }
@@ -327,11 +389,11 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
                             imageVector = if (isCharging) Icons.Default.Power else Icons.Default.ElectricBolt,
                             contentDescription = null,
                             tint = color,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(22.dp)
                         )
                         Text(
                             text = if (isCharging) "CHARGING" else "DISCHARGING",
-                            style = MaterialTheme.typography.labelMedium,
+                            style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = color
                         )
@@ -343,8 +405,15 @@ fun WattageWidget(watts: Float, color: Color, isCharging: Boolean) {
 }
 
 @Composable
-fun MetricCard(label: String, value: String, icon: ImageVector, modifier: Modifier = Modifier) {
+fun MetricCard(
+    label: String, 
+    value: String, 
+    icon: ImageVector, 
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
     Card(
+        onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
@@ -412,10 +481,9 @@ fun DashboardPreview() {
                     capacityPercent = 85,
                     isCharging = true,
                     health = "Good",
-                    radioSignalDbm = -95,
-                    chargingPolicy = "Adaptive",
-                    isPowerSaveMode = false,
-                    isInteractive = true
+                    batteryCapacityMah = 4850,
+                    technology = "Li-ion",
+                    pluggedSource = "AC"
                 )
             )
         }
